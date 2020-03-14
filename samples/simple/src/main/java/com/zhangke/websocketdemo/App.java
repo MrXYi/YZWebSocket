@@ -6,6 +6,8 @@ import com.zhangke.websocket.WebSocketHandler;
 import com.zhangke.websocket.WebSocketManager;
 import com.zhangke.websocket.WebSocketSetting;
 
+import java.util.HashMap;
+
 /**
  * Created by ZhangKe on 2018/6/27.
  */
@@ -23,8 +25,15 @@ public class App extends Application {
     private void initWebSocket(){
         WebSocketSetting setting = new WebSocketSetting();
         //连接地址，必填，例如 wss://echo.websocket.org
-        setting.setConnectUrl("wss://echo.websocket.org");//必填
-//        setting.setConnectUrl("ws://192.168.99.222");//必填
+//        setting.setConnectUrl("wss://echo.websocket.org");//必填
+        setting.setConnectUrl("ws://192.168.99.79:7681");//必填
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("sec-websocket-protocol", "lws-mirror-protocol");
+        map.put("origin", "192.168.99.79");
+        map.put("pragma", "no-cache");
+        map.put("cache-control", "no-cache");
+        setting.setHttpHeaders(map);
 
         //设置连接超时时间
         setting.setConnectTimeout(15 * 1000);

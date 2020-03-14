@@ -3,11 +3,9 @@ package com.zhangke.websocket;
 import android.text.TextUtils;
 
 import com.zhangke.websocket.request.Request;
-import com.zhangke.websocket.response.ByteBufferResponse;
 import com.zhangke.websocket.response.ErrorResponse;
 import com.zhangke.websocket.response.Response;
 import com.zhangke.websocket.response.ResponseFactory;
-import com.zhangke.websocket.response.TextResponse;
 import com.zhangke.websocket.util.LogUtil;
 
 import org.java_websocket.WebSocket;
@@ -15,12 +13,17 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
+import org.java_websocket.extensions.IExtension;
 import org.java_websocket.framing.Framedata;
-import org.java_websocket.framing.PingFrame;
 import org.java_websocket.handshake.ServerHandshake;
+import org.java_websocket.protocols.IProtocol;
+import org.java_websocket.protocols.Protocol;
 
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,7 +75,11 @@ public class WebSocketWrapper {
                     }
                     Draft draft = mSetting.getDraft();
                     if (draft == null) {
-                        draft = new Draft_6455();
+//                        draft = new Draft_6455();
+                        List<IProtocol> protocols = new ArrayList<>();
+                        Protocol protocol = new Protocol("lws-mirror-protocol");
+                        protocols.add(protocol);
+                        draft = new Draft_6455(Collections.<IExtension>emptyList(), protocols);
                     }
                     int connectTimeOut = mSetting.getConnectTimeout();
                     if (connectTimeOut <= 0) {
@@ -333,11 +340,13 @@ public class WebSocketWrapper {
             super(serverUri, httpHeaders);
         }
 
-        public MyWebSocketClient(URI serverUri, Draft protocolDraft, Map<String, String> httpHeaders) {
+        public MyWebSocketClient(URI serverUri, Draft protocolDraft,
+                                 Map<String, String> httpHeaders) {
             super(serverUri, protocolDraft, httpHeaders);
         }
 
-        public MyWebSocketClient(URI serverUri, Draft protocolDraft, Map<String, String> httpHeaders, int connectTimeout) {
+        public MyWebSocketClient(URI serverUri, Draft protocolDraft,
+                                 Map<String, String> httpHeaders, int connectTimeout) {
             super(serverUri, protocolDraft, httpHeaders, connectTimeout);
         }
 
